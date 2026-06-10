@@ -1,11 +1,13 @@
-const CACHE_NAME = "gympallao-cache-v19";
+const CACHE_NAME = "gympallao-cache-v20";
 
 const APP_ASSETS = [
   "./",
   "./index.html",
   "./style.css",
   "./app.js",
-  "./manifest.json"
+  "./manifest.json",
+  "./icons/icon-192.png",
+  "./icons/icon-512.png"
 ];
 
 self.addEventListener("install", event => {
@@ -29,9 +31,19 @@ self.addEventListener("activate", event => {
 });
 
 self.addEventListener("fetch", event => {
+  if (event.request.method !== "GET") return;
+
   event.respondWith(
-    caches.match(event.request).then(cachedResponse => {
-      return cachedResponse || fetch(event.request);
-    })
+    fetch(event.request)
+      .then(networkResponse => {
+        const responseClone = networkResponse.clone();
+
+        caches.open(CACHE_NAME).then(cache => {
+          cache.put(event.request, responseClone);
+        });
+
+        return networkResponse;
+      })
+      .catch(() => caches.match(event.request))
   );
 });
