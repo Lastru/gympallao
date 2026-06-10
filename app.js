@@ -759,15 +759,20 @@ function renderWorkoutsScreen() {
   const activeWorkouts = getActiveWorkouts();
 
   if (!activeWorkouts.length) {
-    const empty = document.createElement("div");
-    empty.className = "empty-state";
+    const empty = document.createElement("button");
+    empty.type = "button";
+    empty.className = "empty-state empty-state-button";
     empty.innerHTML = `
       <div>
-        <div class="empty-state-icon">+</div>
         <strong>Nessuna scheda ancora</strong>
         <span>Crea la tua prima scheda allenamento e inizia a riempire il calendario.</span>
       </div>
     `;
+
+    empty.addEventListener("click", () => {
+      createNewWorkout();
+    });
+
     els.workoutsList.appendChild(empty);
   }
 
