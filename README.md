@@ -10,35 +10,11 @@ GymPallao helps track training sessions over time through a visual calendar and 
 
 ## Main features
 
-- Mobile-first Progressive Web App
-- Installable from iPhone Home Screen
-- Local-first data storage with IndexedDB
-- Calendar view with monthly navigation
-- Visual workout tracking by day
-- Support for up to three workouts per day
-- Calendar cells colored by completed workouts:
-  - one workout: full color
-  - two workouts: split cell
-  - three workouts: three-part split
-- Weekly and monthly workout counters
-- Custom workout templates
-- Custom workout names
-- Custom workout colors
-- Editable exercise list for each workout template
-- Exercise values with flexible input, such as:
-  - `80kg`
-  - `10km`
-  - `30min`
-  - `1h30min`
-- Current exercise values inferred from the latest valid workout entry
-- Historical workout entries preserved independently from future template edits
-- Manual editing of past workout entries
-- Swipe-to-delete interface
-- Drag-and-drop ordering with handles
-- Expandable workout cards inside daily logs
-- Backup export as JSON
-- Backup import with replace or merge mode
-- Settings modal with backup tools and calendar legend
+GymPallao provides a simple calendar-based interface for tracking gym activity over time. Users can create custom workout templates, assign them to specific days, and keep a clear visual record of their training routine.
+
+The app supports multiple workouts per day, customizable workout colors, editable exercise lists, and automatic local saving. It is designed for fast mobile use, with a clean interface, expandable workout cards, swipe actions, and drag-and-drop ordering.
+
+All data is stored locally on the device, with JSON backup export and import available from the settings area.
 
 ## Data model philosophy
 
