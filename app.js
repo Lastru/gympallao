@@ -170,7 +170,7 @@ function normalizeState(raw) {
     exercises: Array.isArray(workout.exercises)
       ? workout.exercises.map((exercise, exerciseIndex) => ({
           id: exercise.id || makeId("e"),
-          name: exercise.name || "Nuovo esercizio",
+          name: typeof exercise.name === "string" ? exercise.name : "Nuovo esercizio",
           order: Number.isFinite(exercise.order) ? exercise.order : exerciseIndex + 1
         }))
       : []
@@ -908,6 +908,7 @@ function renderWorkoutEditorExercises(workout) {
     const nameInput = document.createElement("input");
     nameInput.className = "exercise-name-input";
     nameInput.type = "text";
+    nameInput.placeholder = "nome";
     nameInput.value = exercise.name;
 
     const valueInput = document.createElement("input");
@@ -917,7 +918,7 @@ function renderWorkoutEditorExercises(workout) {
     valueInput.value = getCurrentValue(workout.id, exercise.id);
 
     nameInput.addEventListener("input", () => {
-      exercise.name = nameInput.value || "Senza nome";
+      exercise.name = nameInput.value;
       scheduleSave();
       renderWorkoutsScreen();
     });
@@ -969,15 +970,26 @@ function addExerciseToSelectedWorkout() {
 
   const nextOrder = workout.exercises.length + 1;
 
-  workout.exercises.push({
+  const exercise = {
     id: makeId("e"),
-    name: "Nuovo esercizio",
+    name: "",
     order: nextOrder
-  });
+  };
+
+  workout.exercises.push(exercise);
 
   scheduleSave();
   renderWorkoutEditorExercises(workout);
   renderWorkoutsScreen();
+
+  focusEditorExerciseName(exercise.id);
+}
+
+function focusEditorExerciseName(exerciseId) {
+  const input = document.querySelector(`[data-drag-id="${exerciseId}"] .exercise-name-input`);
+  if (!input) return;
+
+  input.focus();
 }
 
 function enableWorkoutNameEdit() {
@@ -1182,17 +1194,21 @@ function renderDayModal() {
       addExtraBtn.innerHTML = `<span class="plus-icon">+</span>`;
 
       addExtraBtn.addEventListener("click", () => {
-        dayWorkout.exercises.push({
+        const exercise = {
           id: makeId("de_extra"),
           templateExerciseId: null,
-          name: "Nuovo esercizio",
+          name: "",
           value: "",
           extra: true,
           order: dayWorkout.exercises.length + 1
-        });
+        };
+
+        dayWorkout.exercises.push(exercise);
 
         scheduleSave();
         renderDayModal();
+
+        focusDayExerciseName(exercise.id);
       });
 
       detailsInner.appendChild(list);
@@ -1288,6 +1304,13 @@ function toggleDayWorkoutExpanded(dayWorkoutId) {
   }, 300);
 }
 
+function focusDayExerciseName(exerciseId) {
+  const input = document.querySelector(`[data-drag-id="${exerciseId}"] .exercise-name-input`);
+  if (!input) return;
+
+  input.focus();
+}
+
 function createDayExerciseCard(dayWorkout, exercise) {
   const card = document.createElement("article");
   card.className = "exercise-card";
@@ -1303,6 +1326,7 @@ function createDayExerciseCard(dayWorkout, exercise) {
   const nameInput = document.createElement("input");
   nameInput.className = "exercise-name-input";
   nameInput.type = "text";
+  nameInput.placeholder = "nome";
   nameInput.value = exercise.name;
 
   const valueInput = document.createElement("input");
@@ -1312,7 +1336,7 @@ function createDayExerciseCard(dayWorkout, exercise) {
   valueInput.value = exercise.value || "";
 
   nameInput.addEventListener("input", () => {
-    exercise.name = nameInput.value || "Senza nome";
+    exercise.name = nameInput.value;
     scheduleSave();
   });
 
