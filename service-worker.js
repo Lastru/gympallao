@@ -1,4 +1,4 @@
-const CACHE_NAME = "gympallao-cache-v1";
+const CACHE_NAME = "gympallao-cache-v18";
 
 const APP_ASSETS = [
   "./",

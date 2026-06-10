@@ -15,33 +15,301 @@
 
   <title>GymPallao</title>
 </head>
+
 <body>
   <main class="app-shell">
-    <section class="screen active-screen">
-      <header class="home-header">
-        <div>
-          <p class="eyebrow">GymPallao</p>
-          <h1>Dashboard</h1>
-        </div>
+
+    <!-- HEADER FISSO -->
+    <header class="app-topbar">
+      <nav class="main-tabs" aria-label="Navigazione principale">
+        <button id="calendarTabBtn" class="tab-button active" type="button">
+          Calendario
+        </button>
+        <button id="workoutsTabBtn" class="tab-button" type="button">
+          Schede
+        </button>
+      </nav>
+
+      <button id="settingsBtn" class="settings-button" type="button" aria-label="Impostazioni">
+        ⚙️
+      </button>
+    </header>
+
+    <!-- SCHERMATA CALENDARIO -->
+    <section id="calendarScreen" class="screen active-screen">
+      <header class="screen-header">
+        <p class="brand-line">
+          <span class="brand-name">GYMPALLAO</span>
+          <span class="brand-by">by Lastru</span>
+        </p>
+        <h1>Calendario</h1>
       </header>
 
-      <section class="summary-card">
-        <div>
-          <span class="summary-label">Setup</span>
-          <strong>OK</strong>
-          <span class="summary-unit">app pronta</span>
-        </div>
+      <section class="stats-grid">
+        <article id="weekStatsCard" class="stat-card">
+          <span class="stat-label">Questa settimana</span>
+          <strong id="weekWorkoutCount">0</strong>
+          <span class="stat-text">allenamenti</span>
+        </article>
+
+        <article class="stat-card">
+          <span class="stat-label">Questo mese</span>
+          <strong id="monthWorkoutCount">0</strong>
+          <span class="stat-text">allenamenti</span>
+        </article>
       </section>
 
-      <section class="main-card">
-        <h2>Benvenuto</h2>
-        <p>
-          Questa è la base iniziale di GymPallao.  
-          Nei prossimi passaggi aggiungeremo schermate, dati e funzioni.
+      <section class="calendar-card">
+        <div class="month-nav">
+          <button id="prevMonthBtn" class="month-arrow" type="button" aria-label="Mese precedente">
+            ‹
+          </button>
+          <h2 id="monthTitle">—</h2>
+
+          <button id="nextMonthBtn" class="month-arrow" type="button" aria-label="Mese successivo">
+            ›
+          </button>
+        </div>
+
+        <div class="weekday-row" aria-hidden="true">
+          <span>L</span>
+          <span>M</span>
+          <span>M</span>
+          <span>G</span>
+          <span>V</span>
+          <span>S</span>
+          <span>D</span>
+        </div>
+
+        <div id="calendarGrid" class="calendar-grid"></div>
+      </section>
+    </section>
+
+    <!-- SCHERMATA SCHEDE -->
+    <section id="workoutsScreen" class="screen">
+      <header class="screen-header">
+        <p class="brand-line">
+          <span class="brand-name">GYMPALLAO</span>
+          <span class="brand-by">by Lastru</span>
         </p>
+        <h1>Schede</h1>
+      </header>
+
+      <section class="workouts-card">
+        <div id="workoutsList" class="workouts-list">
+          <!-- Le schede verranno generate da app.js -->
+        </div>
+
+        <button id="addWorkoutBtn" class="dashed-card icon-only-card" type="button" aria-label="Aggiungi scheda">
+          <span class="plus-icon">+</span>
+        </button>
       </section>
     </section>
   </main>
+
+  <!-- POPUP GIORNO -->
+  <section id="dayModal" class="modal hidden" aria-modal="true" role="dialog">
+    <div class="modal-backdrop" data-close-modal="day"></div>
+
+    <article class="modal-card day-modal-card">
+      <header class="modal-header">
+        <div>
+          <p class="eyebrow">Allenamenti</p>
+          <h2 id="dayModalTitle">—</h2>
+        </div>
+      </header>
+
+      <div id="dayWorkoutsList" class="day-workouts-list">
+        <!-- Allenamenti del giorno -->
+      </div>
+
+      <button id="addDayWorkoutBtn" class="dashed-card icon-only-card" type="button" aria-label="Aggiungi allenamento">
+        <span class="plus-icon">+</span>
+      </button>
+
+      <div id="dayWorkoutPicker" class="workout-picker hidden">
+        <p class="section-title">Scegli scheda</p>
+        <div id="dayWorkoutPickerList" class="picker-list">
+          <!-- Lista schede disponibili -->
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- POPUP MODIFICA SCHEDA -->
+  <section id="workoutEditorModal" class="modal hidden" aria-modal="true" role="dialog">
+    <div class="modal-backdrop" data-close-modal="workout-editor"></div>
+
+    <article class="modal-card large-modal-card">
+      <header class="modal-header modal-header-with-back">
+        <button id="closeWorkoutEditorBtn" class="back-button" type="button">
+          ← Indietro
+        </button>
+      </header>
+
+      <section class="editor-section">
+        <p class="section-title">Nome scheda</p>
+
+        <div class="editable-title-row">
+          <h2 id="workoutEditorTitle">Nuova scheda</h2>
+          <button id="editWorkoutNameBtn" class="icon-button" type="button" aria-label="Modifica nome">
+            ✏️
+          </button>
+        </div>
+
+        <input id="workoutNameInput" class="text-input workout-title-input" type="text" autocomplete="off" />
+      </section>
+
+      <section class="editor-section">
+        <p class="section-title">Colore</p>
+
+        <label class="color-row">
+          <span id="workoutColorPreview" class="color-preview"></span>
+          <input id="workoutColorInput" class="color-input" type="color" value="#facc15" />
+        </label>
+      </section>
+
+      <section class="editor-section">
+        <div class="section-header-row">
+          <p class="section-title">Esercizi</p>
+        </div>
+
+        <div id="editorExercisesList" class="exercise-list">
+          <!-- Esercizi della scheda -->
+        </div>
+
+        <button id="addExerciseBtn" class="dashed-card small-dashed-card icon-only-card" type="button" aria-label="Aggiungi esercizio">
+          <span class="plus-icon">+</span>
+        </button>
+      </section>
+    </article>
+  </section>
+
+  <!-- POPUP IMPOSTAZIONI -->
+  <section id="settingsModal" class="modal hidden" aria-modal="true" role="dialog">
+    <div class="modal-backdrop" data-close-modal="settings"></div>
+
+    <article class="modal-card large-modal-card">
+      <header class="modal-header modal-header-with-back">
+        <button id="closeSettingsBtn" class="back-button" type="button">
+          ← Indietro
+        </button>
+      </header>
+
+      <section class="editor-section">
+        <p class="brand-line">
+          <span class="brand-name">GYMPALLAO</span>
+          <span class="brand-by">by Lastru</span>
+        </p>
+        <h2>Impostazioni</h2>
+      </section>
+
+      <section class="settings-section">
+        <p class="section-title">Backup</p>
+
+        <div class="settings-actions">
+          <button id="exportBackupBtn" class="primary-action-button" type="button">
+            Esporta dati
+          </button>
+
+          <button id="importBackupBtn" class="secondary-action-button" type="button">
+            Importa dati
+          </button>
+
+          <input id="backupFileInput" class="hidden" type="file" accept="application/json" />
+        </div>
+
+        <p class="settings-hint">
+          I dati restano salvati localmente su questo dispositivo. Il backup serve per non perderli se cancelli i dati di Safari.
+        </p>
+      </section>
+
+      <section class="settings-section">
+        <p class="section-title">Legenda calendario</p>
+
+        <div class="calendar-legend">
+          <div class="legend-row">
+            <span class="legend-box legend-box-one">
+              <i class="legend-layer legend-layer-full legend-yellow"></i>
+            </span>
+            <span>1 colore = 1 allenamento</span>
+          </div>
+
+          <div class="legend-row">
+            <span class="legend-box legend-box-two">
+              <i class="legend-layer legend-layer-left legend-yellow"></i>
+              <i class="legend-layer legend-layer-right legend-blue"></i>
+            </span>
+            <span>2 colori = 2 allenamenti</span>
+          </div>
+
+          <div class="legend-row">
+            <span class="legend-box legend-box-three">
+              <i class="legend-layer legend-layer-top legend-yellow"></i>
+              <i class="legend-layer legend-layer-bottom-left legend-blue"></i>
+              <i class="legend-layer legend-layer-bottom-right legend-red"></i>
+            </span>
+            <span>3 colori = 3 allenamenti</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="settings-section">
+        <p class="section-title">Info app</p>
+        <p class="settings-hint">
+          Versione locale iniziale di GymPallao.
+        </p>
+      </section>
+    </article>
+  </section>
+
+  <!-- SCELTA IMPORT BACKUP -->
+  <section id="importChoiceModal" class="modal hidden" aria-modal="true" role="dialog">
+    <div class="modal-backdrop"></div>
+
+    <article class="modal-card confirm-card import-choice-card">
+      <h2>Come vuoi importare?</h2>
+      <p>
+        Puoi sostituire tutti i dati attuali oppure unire il backup importando solo i giorni vuoti e le schede mancanti.
+      </p>
+
+      <div class="import-actions">
+        <button id="replaceImportBtn" class="danger-action-button" type="button">
+          Sostituisci tutto
+        </button>
+
+        <button id="mergeImportBtn" class="primary-action-button" type="button">
+          Unisci giorni vuoti
+        </button>
+
+        <button id="cancelImportBtn" class="secondary-action-button" type="button">
+          Annulla
+        </button>
+      </div>
+    </article>
+  </section>
+
+  <!-- CONFERMA ELIMINAZIONE SCHEDA -->
+  <section id="confirmDeleteModal" class="modal hidden" aria-modal="true" role="dialog">
+    <div class="modal-backdrop"></div>
+
+    <article class="modal-card confirm-card">
+      <h2>Eliminare questa scheda?</h2>
+      <p>
+        Non potrai più usarla nei nuovi allenamenti. Lo storico già registrato non verrà modificato.
+      </p>
+
+      <div class="confirm-actions">
+        <button id="cancelDeleteWorkoutBtn" class="secondary-action-button" type="button">
+          Annulla
+        </button>
+
+        <button id="confirmDeleteWorkoutBtn" class="danger-action-button" type="button">
+          Elimina
+        </button>
+      </div>
+    </article>
+  </section>
 
   <script src="app.js"></script>
 </body>
